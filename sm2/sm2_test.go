@@ -19,6 +19,7 @@ import (
 	"crypto/rand"
 	"crypto/x509/pkix"
 	"encoding/asn1"
+	"encoding/hex"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -36,6 +37,27 @@ func TestSm2(t *testing.T) {
 	}
 	fmt.Printf("%v\n", priv.Curve.IsOnCurve(priv.X, priv.Y)) // 验证是否为sm2的曲线
 	pub := &priv.PublicKey
+
+	fmt.Printf("pri:\t%x\n", priv.D)
+	fmt.Printf("pubx:\t%x\n", pub.X)
+	fmt.Printf("puby:\t%x\n", pub.Y)
+
+	a, _ := hex.DecodeString("009fc565463451cae46e2b483b6c5b7bd0eacf8ffebc8038c70430e3380befb61b")
+	i1 := new(big.Int).SetBytes(a)
+	priv.D = i1
+
+	a2, _ := hex.DecodeString("4ba0f967a5ba50d374f2a9b6ef4dba8f3240e2d6be6204ac9ddc73de35327c17")
+	i2 := new(big.Int).SetBytes(a2)
+	pub.X = i2
+
+	a3, _ := hex.DecodeString("c3701b20e2b602c2fef581849f905183ff7182732fbb24b283a2d1f031c3a801")
+	i3 := new(big.Int).SetBytes(a3)
+	pub.Y = i3
+
+	fmt.Printf("apri:\t%x\n", priv.D)
+	fmt.Printf("apubx:\t%x\n", pub.X)
+	fmt.Printf("apuby:\t%x\n", pub.Y)
+
 	msg := []byte("123456")
 	d0, err := pub.Encrypt(msg)
 	if err != nil {
