@@ -39,10 +39,10 @@ func TestSM4(t *testing.T) {
 	}
 	d0 := make([]byte, 16)
 	c.Encrypt(d0, data)
-	fmt.Printf("d0 = %x\n", d0)
+	fmt.Printf("密文 = %x\n", d0)
 	d1 := make([]byte, 16)
 	c.Decrypt(d1, d0)
-	fmt.Printf("d1 = %x\n", d1)
+	fmt.Printf("明文 = %x\n", d1)
 	if sa := testCompare(data, d1); sa != true {
 		fmt.Printf("Error data!")
 	}

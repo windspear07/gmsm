@@ -152,6 +152,8 @@ func Sign(priv *PrivateKey, hash []byte) (r, s *big.Int, err error) {
 	if entropylen > 32 {
 		entropylen = 32
 	}
+
+	//wind 随机数
 	entropy := make([]byte, entropylen)
 	_, err = io.ReadFull(rand.Reader, entropy)
 	if err != nil {
@@ -159,6 +161,7 @@ func Sign(priv *PrivateKey, hash []byte) (r, s *big.Int, err error) {
 	}
 
 	// Initialize an SHA-512 hash context; digest ...
+	//todo wind 但是这里不是国密sm3的算法
 	md := sha512.New()
 	md.Write(priv.D.Bytes()) // the private key,
 	md.Write(entropy)        // the entropy,

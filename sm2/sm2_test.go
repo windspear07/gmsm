@@ -38,26 +38,33 @@ func TestSm2(t *testing.T) {
 	fmt.Printf("%v\n", priv.Curve.IsOnCurve(priv.X, priv.Y)) // 验证是否为sm2的曲线
 	pub := &priv.PublicKey
 
-	fmt.Printf("pri:\t%x\n", priv.D)
-	fmt.Printf("pubx:\t%x\n", pub.X)
-	fmt.Printf("puby:\t%x\n", pub.Y)
+	fmt.Printf("ori pri:\t%x\n", priv.D)
+	fmt.Printf("ori pubx:\t%x\n", pub.X)
+	fmt.Printf("ori puby:\t%x\n", pub.Y)
 
-	a, _ := hex.DecodeString("009fc565463451cae46e2b483b6c5b7bd0eacf8ffebc8038c70430e3380befb61b")
+	//设置测试sign的密钥
+	//8725b5b17f11d5689ba4fcee75151b0f770a095fb9eb562b560042861466e90b
+	//pub
+	//c1da0e4b5173f5d7780541ace0307d0c474e773541f855f550a990e931345f12
+	//5335f487e0f28fc197c417efc77f54c04aa0706cf3688632dfb3bbff9bcc4feb
+
+	a, _ := hex.DecodeString("030ca27891c694142ce7878c39e7c4495c0638f7e0831548ea5c7dbed0f38b7a")
 	i1 := new(big.Int).SetBytes(a)
 	priv.D = i1
 
-	a2, _ := hex.DecodeString("4ba0f967a5ba50d374f2a9b6ef4dba8f3240e2d6be6204ac9ddc73de35327c17")
+	a2, _ := hex.DecodeString("4d76f1afad5d16ff7561a8b46d36de534e0e2a4fdacc898551cba08e59169553")
 	i2 := new(big.Int).SetBytes(a2)
 	pub.X = i2
 
-	a3, _ := hex.DecodeString("c3701b20e2b602c2fef581849f905183ff7182732fbb24b283a2d1f031c3a801")
+	a3, _ := hex.DecodeString("e270247fb2250b22bf41a8261295d9f247e153198a35442e077798be8c5f36ba")
 	i3 := new(big.Int).SetBytes(a3)
 	pub.Y = i3
 
-	fmt.Printf("apri:\t%x\n", priv.D)
-	fmt.Printf("apubx:\t%x\n", pub.X)
-	fmt.Printf("apuby:\t%x\n", pub.Y)
+	fmt.Printf("set pri:\t%x\n", priv.D)
+	fmt.Printf("set pubx:\t%x\n", pub.X)
+	fmt.Printf("set puby:\t%x\n", pub.Y)
 
+	//加密
 	msg := []byte("123456")
 	d0, err := pub.Encrypt(msg)
 	if err != nil {
@@ -65,6 +72,8 @@ func TestSm2(t *testing.T) {
 		return
 	}
 	fmt.Printf("Cipher text = %v\n", d0)
+
+	//解密
 	d1, err := priv.Decrypt(d0)
 	if err != nil {
 		fmt.Printf("Error: failed to decrypt: %v\n", err)
@@ -74,6 +83,7 @@ func TestSm2(t *testing.T) {
 	if ok != true {
 		log.Fatal(err)
 	}
+
 	pubKey, _ := priv.Public().(*PublicKey)
 	ok, err = WritePublicKeytoPem("pub.pem", pubKey, nil) // 生成公钥文件
 	if ok != true {
@@ -139,7 +149,7 @@ func TestSm2(t *testing.T) {
 	testExtKeyUsage := []ExtKeyUsage{ExtKeyUsageClientAuth, ExtKeyUsageServerAuth}
 	testUnknownExtKeyUsage := []asn1.ObjectIdentifier{[]int{1, 2, 3}, []int{2, 59, 1}}
 	extraExtensionData := []byte("extra extension")
-	commonName := "test.example.com"
+	commonName := "www.zzz.com"
 	template := Certificate{
 		// SerialNumber is negative to ensure that negative
 		// values are parsed. This is due to the prevalence of
